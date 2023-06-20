@@ -8,11 +8,16 @@
 import UIKit
 
 final class SearchViewController: UIViewController {
+    // MARK: - Private Props
+
     private lazy var moduleView = SearchView()
 
-    var currentResponse: GeocodingResponse?
+    // MARK: - Props
 
+    var currentResponse: GeocodingResponse?
     var updateCoordinates: ((Double, Double) -> Void)?
+
+    // MARK: - LifeCycle
 
     override func loadView() {
         view = moduleView
@@ -20,6 +25,8 @@ final class SearchViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        self.navigationController?.navigationBar.tintColor = .white
 
         moduleView.textChanged = { [weak self] text in
             Task {
@@ -48,6 +55,8 @@ final class SearchViewController: UIViewController {
             guard let lat, let lon else {return}
 
             self?.updateCoordinates?(lat, lon)
+            StorageService.shared.saveCords(value: (lat, lon))
+            print("saved")
 
             self?.navigationController?.popViewController(animated: true)
         }

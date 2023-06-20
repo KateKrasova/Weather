@@ -14,7 +14,7 @@ final class SearchView: UIView {
         let names: [String]
     }
 
-    var textChanged: ((String)->Void)?
+    var textChanged: ((String) -> Void)?
     var cellTapped: ((Int) -> Void)?
 
     // MARK: - Private Props
@@ -25,7 +25,6 @@ final class SearchView: UIView {
     // MARK: - Views
 
     private lazy var mainView = UIView()
-    private lazy var closeButton = UIButton(type: .system)
     private lazy var searchBar = UISearchBar()
     private lazy var listTableView = UITableView()
 
@@ -60,7 +59,6 @@ extension SearchView {
 // MARK: - Private Methods
 
 private extension SearchView {
-    /// Настройка View
     func setup() {
         let gradient = CAGradientLayer()
         gradient.colors = [
@@ -71,18 +69,13 @@ private extension SearchView {
         layer.addSublayer(gradient)
 
         addSubview(mainView)
-        addSubview(closeButton)
         addSubview(searchBar)
         addSubview(listTableView)
     }
 
-    /// Добавление Views
     func setupViews() {
         mainView.layer.cornerRadius = 35
         mainView.backgroundColor = .white
-
-        closeButton.setImage(UIImage(systemName: "multiply"), for: .normal)
-        closeButton.tintColor = .black
 
         searchBar.placeholder = "Search location"
         searchBar.searchBarStyle = .minimal
@@ -101,10 +94,8 @@ private extension SearchView {
         listTableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
     }
 
-    /// Установка констреинтов
     func setupConstraints() {
         mainView.translatesAutoresizingMaskIntoConstraints = false
-        closeButton.translatesAutoresizingMaskIntoConstraints = false
         searchBar.translatesAutoresizingMaskIntoConstraints = false
         listTableView.translatesAutoresizingMaskIntoConstraints = false
 
@@ -113,10 +104,7 @@ private extension SearchView {
         mainView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
         mainView.heightAnchor.constraint(equalToConstant: Constants.mainViewHeight).isActive = true
 
-        closeButton.topAnchor.constraint(equalTo: mainView.topAnchor, constant: 20).isActive = true
-        closeButton.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: -20).isActive = true
-
-        searchBar.topAnchor.constraint(equalTo: closeButton.bottomAnchor, constant: 15).isActive = true
+        searchBar.topAnchor.constraint(equalTo: mainView.topAnchor, constant: 45).isActive = true
         searchBar.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         searchBar.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30).isActive = true
         searchBar.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30).isActive = true

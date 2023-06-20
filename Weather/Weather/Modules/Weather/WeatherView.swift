@@ -33,7 +33,6 @@ final class WeatherView: UIView {
     private lazy var cityLabel = UILabel()
     private lazy var countryLabel = UILabel()
     private lazy var locationStackView = UIStackView()
-    private lazy var locationButton = UIButton(type: .system)
 
     private lazy var circleView = UIView()
     private lazy var temperatureLabel = UILabel()
@@ -106,7 +105,6 @@ private extension WeatherView {
         addSubview(locationStackView)
         addSubview(circleView)
         addSubview(infoStackView)
-        addSubview(locationButton)
     }
 
     func setupViews() {
@@ -115,9 +113,11 @@ private extension WeatherView {
 
         cityLabel.font = UIFont(name: "Optima Bold", size: 40)
         cityLabel.textColor = .white
+        cityLabel.text = "No city"
 
         countryLabel.font = UIFont(name: "Optima Regular", size: 20)
         countryLabel.textColor = .white
+        countryLabel.text = "Please choose city"
 
         locationStackView.axis = .vertical
         locationStackView.spacing = -10
@@ -126,9 +126,6 @@ private extension WeatherView {
         locationStackView.addArrangedSubview(dateLabel)
         locationStackView.addArrangedSubview(cityLabel)
         locationStackView.addArrangedSubview(countryLabel)
-
-        locationButton.setImage(UIImage(systemName: "paperplane.fill"), for: .normal)
-        locationButton.tintColor = UIColor(named: "circleText")
 
         circleView.addSubview(temperatureLabel)
         circleView.addSubview(weatherImage)
@@ -163,7 +160,6 @@ private extension WeatherView {
         temperatureLabel.translatesAutoresizingMaskIntoConstraints = false
         weatherImage.translatesAutoresizingMaskIntoConstraints = false
         infoStackView.translatesAutoresizingMaskIntoConstraints = false
-        locationButton.translatesAutoresizingMaskIntoConstraints = false
 
         locationStackView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
         locationStackView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
@@ -183,9 +179,6 @@ private extension WeatherView {
 
         infoStackView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         infoStackView.topAnchor.constraint(equalTo: circleView.bottomAnchor, constant: 20).isActive = true
-
-        locationButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -40).isActive = true
-        locationButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30).isActive = true
     }
 }
 
@@ -199,36 +192,37 @@ private extension WeatherView {
 }
 
 enum Icons: String {
-    case thunderstorm = "Thunderstorm",
-         Drizzle,
-         Rain,
-         Snow,
-         Clear,
-         Clouds,
-         Mist,
-         Fog, Dust
+    case thunderstorm = "Thunderstorm"
+    case drizzle = "Drizzle"
+    case rain = "Rain"
+    case snow = "Snow"
+    case clear = "Clear"
+    case clouds = "Clouds"
+    case mist = "Mist"
+    case fog = "Fog"
+    case dust = "Dust"
 
     var icon: String {
         switch self {
         case .thunderstorm:
             return "stormy"
 
-        case .Drizzle:
+        case .drizzle:
             return "rain-cloud"
 
-        case .Rain:
+        case .rain:
             return "rainfall"
 
-        case .Snow:
+        case .snow:
             return "snow"
 
-        case .Clear:
+        case .clear:
             return "sun"
 
-        case .Clouds:
+        case .clouds:
             return "clouds"
 
-        case .Mist, .Fog, .Dust:
+        case .mist, .fog, .dust:
             return "dust"
         }
     }

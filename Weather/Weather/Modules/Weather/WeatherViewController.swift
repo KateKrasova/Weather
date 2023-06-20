@@ -8,7 +8,11 @@
 import UIKit
 
 final class WeatherViewController: UIViewController {
+    // MARK: - Private Props
+
     private let moduleView = WeatherView()
+
+    // MARK: - LifeCycle
 
     override func loadView() {
         view = moduleView
@@ -16,11 +20,20 @@ final class WeatherViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        guard let coord = StorageService.shared.fetchCords() else {return}
+        print(coord)
+        fetchData(lat: coord.0, lon: coord.1)
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         setupNavBar()
     }
 }
+// MARK: - Private Methods
 
-extension WeatherViewController {
+private extension WeatherViewController {
     func setupNavBar() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             image: UIImage(systemName: "magnifyingglass"),
@@ -38,25 +51,43 @@ extension WeatherViewController {
         navigationController?.pushViewController(vc, animated: true)
 
         vc.updateCoordinates = { [weak self] lat, lon in
-            Task {
-                do {
-                    let weather = try await ApiService.shared.getWeather(lat: lat, lon: lon)
-                    self?.moduleView.render(
-                        .init(
-                            date: weather.date ?? -1,
-                            city: weather.name ?? "",
-                            country: weather.sys?.country ?? "",
-                            temperature: weather.main?.temp ?? -1,
-                            mainWearher: weather.weather?.first?.main ?? "",
-                            wind: weather.wind?.speed ?? -1,
-                            visibilit: weather.visibility ?? -1,
-                            humidity: weather.main?.humidity ?? -1,
-                            airPressure: weather.main?.pressure ?? -1
-                        )
-                    )
-                } catch {
-                    print(error)
+            self?.fetchData(lat: lat, lon: lon)
+        }
+    }
+
+    func fetchData(lat: Double, lon: Double) {
+        Task {
+            do {
+                let weather = try await ApiService.shared.getWeather(lat: lat, lon: lon)
+                guard
+                    let date = weather.date,
+                    let name = weather.name,
+                    let country = weather.sys?.country,
+                    let temp = weather.main?.temp,
+                    let mainWeather = weather.weather?.first?.main,
+                    let wind = weather.wind?.speed,
+                    let visibility = weather.visibility,
+                    let humidity = weather.main?.humidity,
+                    let airPressure = weather.main?.pressure
+                else {
+                    return
                 }
+
+                moduleView.render(
+                    .init(
+                        date: date,
+                        city: name,
+                        country: country,
+                        temperature: temp,
+                        mainWearher: mainWeather,
+                        wind: wind,
+                        visibilit: visibility,
+                        humidity: humidity,
+                        airPressure: airPressure
+                    )
+                )
+            } catch {
+                print(error)
             }
         }
     }
